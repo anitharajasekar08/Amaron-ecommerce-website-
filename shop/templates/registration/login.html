@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<div class="auth-wrapper">
+
+    <div class="auth-box">
+        <h2>Login</h2>
+
+        {% if form.errors %}
+        <div class="error-box">
+            Please enter a correct username and password.
+        </div>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="login-btn">Login</button>
+        </form>
+
+        <p class="register-text">
+            Don't have account?
+            <a href="{% url 'register' %}?next={{ request.GET.next }}">Register</a>
+        </p>
+    </div>
+
+</div>
+
+</body>
+</html>
