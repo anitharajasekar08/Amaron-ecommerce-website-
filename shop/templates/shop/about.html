@@ -127,6 +127,15 @@
         </div>
     </footer>
     <script src="{% static 'js/script.js' %}"></script>
+     <div id="cartSidebar" class="cart-sidebar">
+        <span onclick="closeCart()">×</span>
+
+        <div id="cartItems"></div>
+        <div class="cart-footer">
+            <h4>Total ₹<span id="totalAmount">0</span></h4>
+            <button class="checkout-btn" id="checkoutBtn">Checkout</button>
+        </div>
+    </div>
 </body>
 
 </html>
