@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Success</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    <div class="success-page">
+        <section class="success">
+    <h1 style="color: green;">🎉 Order Placed Successfully!</h1>
+
+    <h3>Order ID: {{ order.id }}</h3>
+    <h3>Total Amount: ₹{{ order.total_amount }}</h3>
+
+    <p>Thank you for shopping with us.</p>
+    <a href="{% url 'download_invoice' order.id %}">Download Invoice</a>
+<a href="{% url 'my_orders' %}">View Order History</a>
+    <a href="{% url 'index' %}" 
+       style="display:inline-block;margin-top:20px;padding:10px 20px;background:black;color:white;text-decoration:none;">
+       Continue Shopping
+    </a>
+</section>
+
+    </div>
+</body>
+
+</html>

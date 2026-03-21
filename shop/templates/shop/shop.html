@@ -1,0 +1,176 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR ANITHA AGENCIES</title>
+
+    <link rel="shortcut icon" href="{% static 'shop/images/icon.png' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <section id="header">
+        <div class="logo">
+            <i class="fa-solid fa-bolt-lightning" style="font-size: 40px;">
+            </i><span class="logo"><span class="logogreen">A
+                    R </span>Anitha Agencies</span>
+        </div>
+        <ul id="navbar">
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li><a class="active" href="{% url 'shop' %}">Shop</a></li>
+            <li><a href="{% url 'service' %}">Service</a></li>
+            <li><a href="{% url 'contact' %}">Contact</a></li>
+            <li><a href="{% url 'about' %}">About Us</a></li>
+            <li class="laptop"><a id="lg-bag" href="#" onclick="openCart()">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <span class="cart-badge" id="cart-count">0</span>
+                </a></li>
+        </ul>
+        <div id="mobile">
+            <a id="lg-bag" href="#" onclick="openCart()">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <span class="cart-badge" id="cart-count">0</span>
+            </a>
+            <i id="bar" class="fa-solid fa-bars"></i>
+        </div>
+        <i id="close" class="fa-solid fa-x"></i>
+    </section>
+
+    <!-- PAGE HEADER -->
+    <section id="page-header">
+        <h4>
+            “One Brand. Every Battery. Bikes, Cars, Commercial,<br>
+            Farm, and Inverters — Powered by Us.”
+        </h4>
+    </section>
+
+    <!-- SEARCH -->
+    <div class="product-section">
+        <form class="product-search">
+            <input type="text" id="search" placeholder="search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </form>
+    </div>
+
+    <!-- PRODUCTS -->
+    {% block content %}
+
+    <section id="product1" class="section-p1">
+        <div class="pro-container">
+
+            {% for product in products %}
+            <div class="pro" onclick="window.location.href='{% url 'product_detail' product.id %}'">
+
+                <img src="{{ product.image.url }}">
+               
+
+                <div class="des">
+                    <h6>{{ product.name }}</h6>
+                    <h4>₹{{ product.price }}</h4>
+                </div>
+                <button class="cart" onclick="event.stopPropagation(); addToCart('{{ product.id }}');">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                </button>
+                <form method="POST" action="{% url 'add_to_wishlist' product.id %}" class="wishlist-form">
+    {% csrf_token %}
+    <button type="submit" class="wishlist-btn" onclick="event.stopPropagation();">
+        <i class="fa-solid fa-heart"></i>
+    </button>
+</form>
+</form>
+
+            </div>
+            {% endfor %}
+
+        </div>
+    </section>
+    <!-- PAGINATION -->
+    <section id="pagination">
+
+        {% if products.has_previous %}
+        <a href="?page=1">First</a>
+        <a href="?page={{ products.previous_page_number }}">«</a>
+        {% endif %}
+
+        {% for num in products.paginator.page_range %}
+        {% if products.number == num %}
+        <a href="#" class="page-active">{{ num }}</a>
+        {% else %}
+        <a href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+        {% endfor %}
+
+        {% if products.has_next %}
+        <a href="?page={{ products.next_page_number }}">»</a>
+        <a href="?page={{ products.paginator.num_pages }}">Last</a>
+        {% endif %}
+
+    </section>
+    {% endblock %}
+    <!-- FOOTER -->
+    <footer>
+        <div class="about">
+            <h4>About</h4>
+            <p>AR ANITHA AGENCIES is a trusted Amaron battery dealer since 2000,offering genuine batteries for vehicles
+                and home inverters. Known for quality products, expert service, and reliable support.</p>
+        </div>
+        <div class="links">
+            <h4>Quick Links</h4>
+            <ul>
+                <li><a href="{% url 'index' %}"><i class="fa-solid fa-arrow-right"></i>Home</a></li>
+                <li><a href="{% url 'shop' %}"><i class="fa-solid fa-arrow-right"></i>Shop</a></li>
+                <li><a href="{% url 'service' %}"><i class="fa-solid fa-arrow-right"></i>Service</a></li>
+                <li><a href="{% url 'contact' %}"><i class="fa-solid fa-arrow-right"></i>Contact</a></li>
+                <li><a href="{% url 'about' %}"><i class="fa-solid fa-arrow-right"></i>About Us</a></li>
+            </ul>
+        </div>
+        <div class="getintouch">
+            <h4>Get In Touch</h4>
+            <ul>
+                <li><i class="fa-solid fa-map"></i><span>Krishnankovil Main Road,Watrap</span></li>
+                <li><i class="fa-duotone fa-solid fa-phone"></i> <span>9443962286</span></li>
+                <li><i class="fa-sharp fa-regular fa-envelope"></i> <span id="email">anitharajasekar083@gmail.com</span>
+                </li>
+            </ul>
+        </div>
+        <div>
+            <h4>Follow Us</h4>
+            <div>
+                <a href="https://www.instagram.com/amaron.india?igsh=Z3NxZHZlcjM1bTJw" target="_blank"><i
+                        class="fa-brands fa-instagram"></i></a>
+                <a href="https://www.facebook.com/amaronofficial/" target="_blank"><i
+                        class="fa-brands fa-facebook"></i></a>
+                <a href="https://in.pinterest.com/ideas/amaron-battery/956316026163/" target="_blank"><i
+                        class="fa-brands fa-pinterest"></i></a>
+                <a href="https://www.youtube.com/@amaronofficial5484" target="_blank">
+                    <i class="fa-brands fa-youtube"></i>
+                </a>
+                </div>
+        </div>
+    </footer>
+
+    <div id="cartSidebar" class="cart-sidebar">
+        <span onclick="closeCart()">×</span>
+
+        <div id="cartItems"></div>
+
+        <div class="cart-footer">
+            <h4>Total ₹<span id="totalAmount">0</span></h4>
+            <button class="checkout-btn" id="checkoutBtn">Checkout</button>
+
+
+        </div>
+    </div>
+
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+
+</html>

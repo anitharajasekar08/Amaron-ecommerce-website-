@@ -1,0 +1,117 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR ANITHA AGENCIES - Product</title>
+    <link rel="shortcut icon" href="{% static 'shop/images/icon.png' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+    <!-- HEADER -->
+    <section id="header">
+        <div class="logo">
+            <i class="fa-solid fa-bolt-lightning" style="font-size: 40px;">
+            </i><span class="logo"><span class="logogreen">A
+                    R </span>Anitha Agencies</span>
+        </div>
+        <ul id="navbar">
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li><a class="active" href="{% url 'shop' %}">Shop</a></li>
+            <li><a href="{% url 'service' %}">Service</a></li>
+            <li><a href="{% url 'contact' %}">Contact</a></li>
+            <li><a href="{% url 'about' %}">About Us</a></li>
+            <li class="laptop"><a id="lg-bag" href="#" onclick="openCart()">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <span class="cart-badge" id="cart-count">0</span>
+                </a></li>
+        </ul>
+        <div id="mobile">
+            <a id="lg-bag" href="#" onclick="openCart()">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <span class="cart-badge" id="cart-count">0</span>
+            </a>
+            <i id="bar" class="fa-solid fa-bars"></i>
+        </div>
+        <i id="close" class="fa-solid fa-x"></i>
+    </section>
+    <!-- PRODUCT DETAILS -->
+    <section id="prodetails" class="section-p1">
+        <div class="single-pro-image">
+
+            {% if product.image %}
+            <img src="{{ product.image.url }}" id="mainimg" width="100%">
+            {% else %}
+            <img src="{% static 'shop/images/default.png' %}" id="mainimg" width="100%">
+            {% endif %}
+
+            <div class="small-img-group">
+                {% for img in product.images.all %}
+                <div class="small-img-col">
+                    <img src="{{ img.image.url }}" class="small-img">
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+
+
+        </div>
+
+        <div class="single-pro-details">
+            <h2>{{ product.name }}</h2>
+            <h4>₹{{ product.price }}</h4>
+
+            <input type="number" value="1" min="1" id="productQty">
+
+            <button class="normal"
+    onclick="addToCart('{{ product.id }}', document.getElementById('productQty').value)">
+    Add To Cart
+</button>
+
+            <br><br>
+
+            <span>{{ product.description }}</span>
+
+            <ul>
+                {% for feature in product.features.all %}
+                <li>{{ feature.feature }}</li>
+                {% endfor %}
+            </ul>
+
+            <h6>{{ product.headline }}</h6>
+
+        </div>
+    </section>
+    <!-- IMAGE SWITCH SCRIPT -->
+    <script>
+        var MainImg = document.getElementById("mainimg");
+        var smallimg = document.getElementsByClassName("small-img");
+
+        for (let i = 0; i < smallimg.length; i++) {
+            smallimg[i].onclick = function () {
+                MainImg.src = smallimg[i].src;
+            }
+        }
+    </script>
+    <!-- CART SIDEBAR (ONLY ONE) -->
+    <div id="cartSidebar" class="cart-sidebar">
+        <span onclick="closeCart()">×</span>
+
+        <div id="cartItems"></div>
+        <div class="cart-footer">
+            <h4>Total ₹<span id="totalAmount">0</span></h4>
+            <button class="checkout-btn" id="checkoutBtn">Checkout</button>
+        </div>
+    </div>
+
+    <script src="{% static 'js/script.js' %}"></script>
+
+</body>
+
+</html>

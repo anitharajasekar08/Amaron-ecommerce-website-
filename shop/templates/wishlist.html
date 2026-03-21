@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Wishlist</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<div class="wishlist-heading">
+    <h2>My Wishlist</h2>
+</div>
+
+{% for item in items %}
+<div class="wishlist-card">
+    <img src="{{ item.product.image.url }}" width="120">
+    <h3>{{ item.product.name }}</h3>
+    <p>₹{{ item.product.price }}</p>
+
+    <button onclick="addToCart('{{ item.product.id }}')">
+    Add to Cart
+</button>
+</div>
+<hr>
+{% empty %}
+<p>Your wishlist is empty.</p>
+{% endfor %}
+
+<!-- CART SIDEBAR -->
+<div id="cartSidebar" class="cart-sidebar">
+        <span onclick="closeCart()">×</span>
+
+        <div id="cartItems"></div>
+        <div class="cart-footer">
+            <h4>Total ₹<span id="totalAmount">0</span></h4>
+            <button class="checkout-btn" id="checkoutBtn">Checkout</button>
+        </div>
+    </div>
+
+
+<script src="{% static 'js/script.js' %}"></script>
+
+</body>
+</html>

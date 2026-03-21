@@ -1,0 +1,1 @@
+web: gunicorn Amaron-ecommerce-website.wsgi

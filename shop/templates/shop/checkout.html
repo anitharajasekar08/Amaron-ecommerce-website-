@@ -1,0 +1,242 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Checkout</title>
+    <link rel="stylesheet" href="{% static 'css/checkout.css' %}">
+</head>
+<body>
+
+<div class="checkout-wrapper">
+
+    <!-- ================= LEFT SIDE ================= -->
+    <div class="checkout-left">
+
+        <h2>Saved Address</h2>
+
+        {% if addresses %}
+            {% for address in addresses %}
+
+            <div class="address-card">
+
+                <!-- RADIO -->
+                <div>
+                    <input type="radio"
+                           name="address_id"
+                           value="{{ address.id }}"
+                           form="orderForm"
+                           {% if forloop.first %}checked{% endif %}>
+                </div>
+
+                <div class="address-details">
+
+                    <!-- VIEW MODE -->
+                    <div id="view-{{ address.id }}">
+                        <strong>{{ address.full_name }}</strong><br>
+                        {{ address.phone }}<br>
+                        {{ address.address_line }}<br>
+                        {{ address.city }}, {{ address.state }} - {{ address.pincode }}
+
+                        <br><br>
+                        <button type="button"
+                                class="edit-btn"
+                                onclick="editAddress({{ address.id }})">
+                            Edit
+                        </button>
+                    </div>
+
+                    <!-- EDIT MODE -->
+                    <div id="edit-{{ address.id }}" style="display:none;">
+
+                        <form method="POST" class="edit-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="update_address" value="1">
+                            <input type="hidden" name="address_id" value="{{ address.id }}">
+
+                            <input type="text" name="full_name"
+                                   value="{{ address.full_name }}" required>
+
+                            <input type="text" name="phone"
+                                   value="{{ address.phone }}" required>
+
+                            <textarea name="address_line" required>{{ address.address_line }}</textarea>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <input type="text" name="city"
+                                           value="{{ address.city }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" name="state"
+                                           value="{{ address.state }}" required>
+                                </div>
+                            </div>
+
+                            <input type="text" name="pincode"
+                                   value="{{ address.pincode }}" required>
+
+                            <button type="submit">Save</button>
+                            <button type="button"
+                                    onclick="cancelEdit({{ address.id }})">
+                                Cancel
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+            </div>
+
+            {% endfor %}
+        {% else %}
+            <p class="no-address">No saved address found.</p>
+        {% endif %}
+
+        <div class="divider"></div>
+
+        <!-- ADD NEW ADDRESS -->
+        <h3>Add New Address</h3>
+
+        <form method="POST" class="address-form">
+            {% csrf_token %}
+            <input type="hidden" name="new_address" value="1">
+
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" name="full_name" required>
+            </div>
+
+            <div class="form-group">
+                <label>Phone</label>
+                <input type="text" name="phone" required>
+            </div>
+
+            <div class="form-group">
+                <label>Address</label>
+                <textarea name="address_line" required></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>City</label>
+                    <input type="text" name="city" required>
+                </div>
+
+                <div class="form-group">
+                    <label>State</label>
+                    <input type="text" name="state" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Pincode</label>
+                <input type="text" name="pincode" required>
+            </div>
+
+            <button type="submit" class="save-btn">
+                Save Address
+            </button>
+        </form>
+
+    </div>
+
+
+    <!-- ================= RIGHT SIDE ================= -->
+    <div class="checkout-right">
+
+        <form method="POST" id="orderForm">
+            {% csrf_token %}
+
+            <div class="order-card">
+
+                <h2>Order Summary</h2>
+
+                {% for item in cart_items %}
+                <div class="order-item">
+                    <span>{{ item.product.name }} × {{ item.quantity }}</span>
+                    <span>₹{{ item.product.price|floatformat:2 }}</span>
+                </div>
+                {% endfor %}
+
+                <div class="order-total">
+                    <strong>Total</strong>
+                    <strong>₹{{ total_amount }}</strong>
+                </div>
+
+                <hr>
+
+                <h3>Select Payment Method</h3>
+
+                <label>
+                    <input type="radio"
+                           name="payment_method"
+                           value="COD"
+                           checked>
+                    Cash on Delivery
+                </label><br>
+
+                <label>
+                    <input type="radio"
+                           name="payment_method"
+                           value="UPI">
+                    Pay via UPI
+                </label>
+
+                <div id="upi-box" style="display:none; margin-top:15px;">
+                    <h4>Scan & Pay Using UPI</h4>
+
+                    <img src="{% static 'shop/images/upi_qr.jpeg' %}"
+                         style="width:220px; border:1px solid #ddd; padding:5px;">
+
+                    <br><br>
+
+                    <input type="text"
+                           name="upi_transaction_id"
+                           placeholder="Enter UPI Transaction ID">
+                </div>
+
+                <button type="submit"
+                        name="place_order"
+                        class="place-btn">
+                    Place Order
+                </button>
+
+            </div>
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+    const radios = document.querySelectorAll('input[name="payment_method"]');
+    const upiBox = document.getElementById("upi-box");
+    const txnInput = document.querySelector('input[name="upi_transaction_id"]');
+
+    radios.forEach(radio => {
+        radio.addEventListener("change", function () {
+            if (this.value === "UPI") {
+                upiBox.style.display = "block";
+                txnInput.required = true;
+            } else {
+                upiBox.style.display = "none";
+                txnInput.required = false;
+            }
+        });
+    });
+
+    function editAddress(id) {
+        document.getElementById("view-" + id).style.display = "none";
+        document.getElementById("edit-" + id).style.display = "block";
+    }
+
+    function cancelEdit(id) {
+        document.getElementById("view-" + id).style.display = "block";
+        document.getElementById("edit-" + id).style.display = "none";
+    }
+</script>
+
+</body>
+</html>

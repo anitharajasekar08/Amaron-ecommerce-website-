@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Orders</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<div class="wishlist-heading">
+    <h2>My Orders</h2>
+</div>
+
+
+{% for order in orders %}
+<div class="order-box">
+    <h4>Order #{{ order.id }}</h4>
+    <p>Total: ₹{{ order.total_amount }}</p>
+    <p>Payment: {{ order.payment_method }}</p>
+    <p>Status: <strong>{{ order.status }}</strong></p>
+
+    <h5>Items:</h5>
+    <ul>
+        {% for item in order.items.all %}
+            <li>{{ item.product.name }} × {{ item.quantity }}</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'download_invoice' order.id %}">Download Invoice</a>
+
+    {% if order.status == "Pending" %}
+        <a href="{% url 'cancel_order' order.id %}" style="color:red;">Cancel Order</a>
+    {% endif %}
+</div>
+
+<hr>
+{% empty %}
+<p>No orders yet.</p>
+{% endfor %}
+
+</body>
+</html>
